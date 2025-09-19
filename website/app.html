@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Order App</title>
+        <style>
+        img
+        {
+            display: block;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 0 auto 10px auto;
+            border-radius: 8px;
+        }
+        body
+        {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-size: cover;
+            padding: 40px 25px;
+            margin-left: 0 auto;
+        }
+
+        header
+        {
+            background-color: lightgray;
+            text-align: center;
+            border-style: groove;
+            border-radius: 10px;
+            box-shadow:0 4px 8px 0 rgba(255, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        ul
+        {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        nav
+        {
+            width: 100%;
+        }
+
+        li
+        {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        a
+        {
+            display: flex;
+            text-decoration: none;
+            color: black;
+            background-color: #e0e0e0;
+            padding: 12px 24px;
+            font-size: 20px;
+            border: 2px solid #bdbdbd;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            cursor: pointer;
+            vertical-align: center;
+        }
+        a:hover
+        {
+            background-color: #616161;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .cat{
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #bdbdbd;
+            padding-bottom: 6px;
+            width: 100%;
+            text-align: center;
+        }
+        .item-list {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: row; /* Items side by side */
+            flex-wrap: wrap;     /* Allow wrapping to next line if needed */
+            justify-content: center;
+            align-items: flex-start;
+            gap: 24px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .item {
+            display: flex;
+            flex-direction: column; /* Stack content vertically */
+            align-items: center;
+            justify-content: flex-start;
+            width: 180px;
+            height: 180px;
+            margin: 0px 0;
+            padding: 12px 10px;
+            border: 2px solid #bdbdbd;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            background: #fff;
+            text-align: center;
+        }
+        .item img {
+            object-fit: fill;
+            margin: 0 0 8px 0;
+            width: 80px;
+            height: 80px;
+        }
+        .item-name, .item-price {
+            font-size: 16px;
+            margin: 2px 0;
+        }
+        .add-to-cart {
+            background: #e63946;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 6px;
+        }
+
+        .add-to-cart:hover {
+            background: #d62839;
+        }
+
+        /* Modal background (dark overlay) */
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6);
+        }
+
+        /* Modal content box */
+        .modal-content {
+            position: relative; /* add this */
+            background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        width: 400px;
+        border-radius: 12px;
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+        text-align: left;
+        }
+
+        /* Modal title */
+        .modal-content h2 {
+        margin-top: 0;
+        font-size: 22px;
+        color: #222;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        }
+
+        /* Close button (X) */
+        .close {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #888;
+        cursor: pointer;
+        }
+
+        .close:hover {
+        color: #e63946;
+        }
+
+        /* Labels and inputs inside modal */
+        .modal-content label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+        }
+
+        .modal-content input[type="radio"],
+        .modal-content input[type="checkbox"] {
+        margin-right: 6px;
+        }
+
+        .modal-content button {
+        background: #1d3557;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 16px;
+        transition: 0.3s;
+        }
+
+        .modal-content button:hover {
+        background: #457b9d;
+        }
+
+        /* Modal animation */
+        @keyframes slideDown {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+        }
+        </style>
+    </head>
+
+    <body>
+
+        <header><h1>Order</h1></header>
+        
+        <nav>
+            <ul>
+                <li><a href = "index.html" id="homeLink">Back to Home</a></li>
+                <li><a href = "cart.html">Cart</a></li>
+                <li><a href = "order.html">Back to Order Home</a></li>
+            </ul>
+        </nav>
+        <div class="item-list">
+            <!-- Items will be dynamically added here -->
+            <h2 class = "cat">Pizza</h2>
+            <div class="item">
+                <img src="order/margherita.jfif">
+                <span class="item-name">Margherita</span>
+                <span class="item-price">$10.00</span>
+                <button class="add-to-cart" data-name="Margherita" data-price="10.00">Add to Cart</button>
+            </div>
+
+            <div class="item">
+                <img src="order/nyc.jfif">
+                <span class="item-name">NY Style Pizza</span>
+                <span class="item-price">$12.00</span>
+                <button class="add-to-cart" data-name="NY Style Pizza" data-price="12.00">Add to Cart</button>
+            </div>
+
+        </div>
+
+        <div class="item-list">
+            <!-- Items will be dynamically added here -->
+            <h2 class = "cat">Subs</h2>
+            <div class="item">
+                <img src="order/sub.jfif">
+                <span class="item-name">Italian Sub</span>
+                <span class="item-price">$10.00</span>
+                <button class="add-to-cart" data-name="Italian Sub" data-price="10.00">Add to Cart</button>
+            </div>
+        </div>
+
+        <!-- Popup modal -->
+        <div id="pizzaModal" class="modal">
+            <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="pizzaTitle">Customize Pizza</h2>
+            <div id="options">
+            <!-- Options will be dynamically added here -->
+            </div>
+            <button id="confirmOrder">Add to Cart</button>
+            </div>
+        </div>
+
+        
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => 
+            {
+
+                document.getElementById("homeLink").addEventListener("click", function(event){
+                    backToHome();
+                });
+
+                function backToHome(event)
+                {
+                    localStorage.clear();
+                }
+
+                const itemTypes = {
+                    "Margherita": "pizza",
+                    "NY Style Pizza": "pizza",
+                    "Italian Sub": "sub"
+                };
+                
+                
+                let itemPrice = 0.00;
+                const modal = document.getElementById('pizzaModal');
+                const closeBtn = modal ? modal.querySelector('.close') : null;
+                const itemTitle = document.getElementById('pizzaTitle');
+                const optionsContainer = document.getElementById('options');
+                const confirmBtn = document.getElementById('confirmOrder');
+
+                function openModal() {
+                    if (!modal) return;
+                    modal.style.display = 'block';
+                }
+                function closeModal() {
+                    if (!modal) return;
+                    modal.style.display = 'none';
+                }
+
+                // safe close button hookup
+                if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+                // click outside to close
+                window.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+
+                // attach to all buttons
+                const buttons = document.querySelectorAll('.add-to-cart');
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                    const name = button.dataset.name;
+                    itemPrice = parseFloat(button.dataset.price) || 0;
+                    itemTitle.textContent = 'Customize ' + name;
+                    const type = itemTypes[name]; // "pizza" or "sub"
+                    // build options inside the modal only (scoped)
+                    optionsContainer.innerHTML = buildOptions(type);
+                    // make sure the default small radio is checked
+                    const small = optionsContainer.querySelector('input[name="size"][value="Small"]');
+                        if (small) small.checked = true;
+
+                    openModal();
+                    });
+                });
+
+                function buildOptions(type) {
+                    let optionsHTML = `
+                        <label>Select Quantity:</label><br>
+                        <input type="number" id="quantity" value="1" min="1" style="width: 60px; margin-bottom: 10px;"><br>
+                    `;
+
+                    if (type === "pizza") {
+                        optionsHTML += `
+                            <label>Select Size:</label><br>
+                            <label><input type="radio" name="size" value="Small" checked> Small + 0.00</label><br>
+                            <label><input type="radio" name="size" value="Medium"> Medium + 3.50</label><br>
+                            <label><input type="radio" name="size" value="Large"> Large + 5.50</label><br><br>
+
+                            <label>Add Any Additional Toppings</label><br>
+                            <label><input type="checkbox" name="topping" value="Extra Cheese"> Extra Cheese + 1.25</label><br>
+                            <label><input type="checkbox" name="topping" value="Pepperoni"> Pepperoni + 2.25</label><br>
+                            <label><input type="checkbox" name="topping" value="Fresh Tomatoes"> Fresh Tomatoes + 2.25</label><br><br>
+                        `;
+                    } else if (type === "sub") {
+                        optionsHTML += `
+                            <label>Select Size:</label><br>
+                            <label><input type="radio" name="size" value="Small" checked> Small + 0.00</label><br>
+                            <label><input type="radio" name="size" value="Large"> Large + 2.50</label><br><br>
+
+                            <label>Add Any Additional Toppings</label><br>
+                            <label><input type="checkbox" name="topping" value="Mushrooms"> Mushrooms + 0.75</label><br>
+                            <label><input type="checkbox" name="topping" value="Lettuce"> Lettuce + 0.50</label><br><br>
+                        `;
+                    } else {
+                        optionsHTML += `<p>No customization available for this item.</p>`;
+                    }
+
+                    return optionsHTML;
+                }
+
+
+
+
+                confirmBtn.addEventListener('click', () => {
+                    const itemName = itemTitle.textContent.replace('Customize ', '');
+                    const sizeEl = optionsContainer.querySelector('input[name="size"]:checked');
+                    if (!sizeEl) { alert('Please select a size.'); return; }
+                    let totalPrice = itemPrice;
+                    const size = sizeEl.value;
+
+                    // Get quantity
+                    const quantityInput = optionsContainer.querySelector('#quantity');
+                    const quantity = parseInt(quantityInput.value);
+                    if (quantity < 1) { alert('Quantity must be at least 1.'); return; }
+                    if (/pizza/i.test(itemName) || itemName === 'Margherita' || itemName === 'NY Style Pizza') {
+                        if (size === 'Medium') totalPrice += 3.50;
+                        else if (size === 'Large') totalPrice += 5.50;
+                        optionsContainer.querySelectorAll('input[name="topping"]:checked').forEach(cb => {
+                            if (cb.value === 'Extra Cheese') totalPrice += 1.25;
+                            else if (cb.value === 'Pepperoni') totalPrice += 2.25;
+                            else if (cb.value === 'Fresh Tomatoes') totalPrice += 2.25;
+                        });
+                    } else if (/sub/i.test(itemName) || itemName === 'Italian Sub') {
+                        if (size === 'Large') totalPrice += 2.50;
+                        optionsContainer.querySelectorAll('input[name="topping"]:checked').forEach(cb => {
+                            if (cb.value === 'Mushrooms') totalPrice += 0.75;
+                            else if (cb.value === 'Lettuce') totalPrice += 0.50;
+                        });
+                    }
+
+                    // Multiply by quantity
+                    totalPrice = Math.round(totalPrice * quantity * 100) / 100;
+
+                    const toppings = Array.from(optionsContainer.querySelectorAll('input[name="topping"]:checked')).map(i => i.value);
+                    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                    cart.push({ name: itemName, size, toppings, price: totalPrice, quantity });
+                    localStorage.setItem('cart', JSON.stringify(cart));
+
+                    alert(`${quantity} x ${itemName} added to cart! Total: $${totalPrice.toFixed(2)}`);
+
+                    // reset and close
+                    optionsContainer.querySelectorAll('input').forEach(i => i.checked = false);
+                    const smallDefault = optionsContainer.querySelector('input[name="size"][value="Small"]');
+                    if (smallDefault) smallDefault.checked = true;
+                    const qtyDefault = optionsContainer.querySelector('#quantity');
+                    if (qtyDefault) qtyDefault.value = 1;
+
+                    closeModal();
+                });
+            });
+
+
+        </script>
+
+
+    </body>
+
+    
+
+    
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Cart</title>
+    <style>
+        body 
+        { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-size: cover;
+            padding: 40px 25px;
+            margin-left: 0 auto;
+        }
+        header
+        {
+            background-color: lightgray;
+            text-align: center;
+            border-style: groove;
+            border-radius: 10px;
+            box-shadow:0 4px 8px 0 rgba(255, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        ul
+        {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        nav
+        {
+            width: 100%;
+        }
+
+        li
+        {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        a
+        {
+            display: flex;
+            text-decoration: none;
+            color: black;
+            background-color: #e0e0e0;
+            padding: 12px 24px;
+            font-size: 20px;
+            border: 2px solid #bdbdbd;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            cursor: pointer;
+            vertical-align: center;
+        }
+        a:hover
+        {
+            background-color: #616161;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .cart-item {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item div { flex: 1; }
+        .cart-item button 
+        { 
+            margin-left: 10px; 
+            border: 2px solid #bdbdbd;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .cart-item button:hover 
+        { 
+            background-color: #616161;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #checkoutBtn 
+        { 
+            margin-top: 20px;
+            margin-left: 10px; 
+            border: 2px solid #bdbdbd;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        #checkoutBtn:hover 
+        { 
+            background-color: #616161;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .Tip {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .Tip input {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+            text-align: center;
+        }
+        #total { 
+            font-weight: bold; 
+            margin-top: 20px; 
+            text-align: right;
+            
+            font-size: 24px;
+        }
+
+        /* Modal background (dark overlay) */
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6);
+        }
+
+        /* Modal content box */
+        .modal-content {
+            position: relative; /* add this */
+            background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        width: 400px;
+        border-radius: 12px;
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+        text-align: left;
+        }
+
+        /* Modal title */
+        .modal-content h2 {
+        margin-top: 0;
+        font-size: 22px;
+        color: #222;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        }
+
+        /* Close button (X) */
+        .close {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #888;
+        cursor: pointer;
+        }
+
+        .close:hover {
+        color: #e63946;
+        }
+
+        /* Labels and inputs inside modal */
+        .modal-content label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+        }
+
+        .modal-content input[type="radio"],
+        .modal-content input[type="checkbox"] {
+        margin-right: 6px;
+        }
+
+        .modal-content button {
+        background: #1d3557;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 16px;
+        transition: 0.3s;
+        }
+
+        .modal-content button:hover {
+        background: #457b9d;
+        }
+
+        /* Modal animation */
+        @keyframes slideDown {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+        }
+                /* Checkout Modal Styling */
+        #checkoutModal .modal-content {
+            width: 400px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+            text-align: left;
+            font-family: Arial, sans-serif;
+        }
+
+        #checkoutModal h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 22px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            color: #222;
+        }
+
+        #checkoutDetails ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #checkoutDetails li {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        #checkoutDetails li:last-child {
+            border-bottom: none;
+        }
+
+        #checkoutDetails p {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        #checkoutDetails p strong {
+            font-size: 18px;
+        }
+
+        #checkoutModal .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+        }
+
+        #checkoutModal .close:hover {
+            color: #e63946;
+        }
+
+        #checkoutModal button {
+            background: #1d3557;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        #checkoutModal button:hover {
+            background: #457b9d;
+        }
+    </style>
+</head>
+<body>
+
+
+    <header><h1>Your Cart</h1></header>
+
+    <nav>
+        <ul>
+            <li><a href = "index.html" id="homeLink">Back to Home</a></li>
+            <li><a href = "app.html">Go Back to Order</a></li>
+            <li><a href = "order.html">Back to Order Home</a></li>
+        </ul>
+    </nav>
+
+    <div id="cartList"></div>
+
+    <div class = "Tip">
+        <h3>Put down below a tip for this restaurant</h3>
+        <input  type="number" id="tipAmount" placeholder="Enter tip amount" min="0" step="0.01">
+    </div>
+
+    <div id="total">Total: $0.00</div>
+
+    <!-- Modal (re-use from your app.html) -->
+    <div id="pizzaModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="pizzaTitle">Customize Item</h2>
+            <div id="options"></div>
+            <button id="confirmOrder">Update Item</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Order Summary</h2>
+            <div id="checkoutDetails"></div>
+            <button id="confirmCheckout">Confirm</button>
+        </div>
+    </div>
+
+    <div>
+        <button id="checkoutBtn">Proceed to Checkout</button>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const cartList = document.getElementById('cartList');
+        const totalEl = document.getElementById('total');
+
+        const modal = document.getElementById('pizzaModal');
+        const closeBtn = modal.querySelector('.close');
+        const itemTitle = document.getElementById('pizzaTitle');
+        const optionsContainer = document.getElementById('options');
+        const confirmBtn = document.getElementById('confirmOrder');
+        let editingIndex = null; // Track which item is being edited
+
+                // Get references
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const checkoutModal = document.getElementById('checkoutModal');
+        const checkoutClose = checkoutModal.querySelector('.close');
+        const checkoutDetails = document.getElementById('checkoutDetails');
+        const confirmCheckout = document.getElementById('confirmCheckout');
+
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Your cart is empty.');
+                return;
+            }
+
+            // Calculate totals
+            let subtotal = 0;
+            cart.forEach(item => subtotal += item.price);
+
+            const tipInput = document.getElementById('tipAmount');
+            const tip = parseFloat(tipInput.value) || 0;
+            const tax = subtotal * 0.06;
+            const total = subtotal + tax + tip;
+
+            // Build HTML line by line
+            let html = '<ul style="list-style:none;padding:0;">';
+            cart.forEach(item => {
+                html += `<li>${item.name} (${item.size}) x ${item.quantity || 1} - $${item.price.toFixed(2)}</li>`;
+            });
+            html += '</ul>';
+            html += `<hr>`;
+            html += `<p>Tip: $${tip.toFixed(2)}</p>`;
+            html += `<p>Tax: $${tax.toFixed(2)}</p>`;
+            html += `<p><strong>Total: $${total.toFixed(2)}</strong></p>`;
+
+            checkoutDetails.innerHTML = html;
+
+            // Show modal
+            checkoutModal.style.display = 'block';
+        });
+
+        // Close modal
+        checkoutClose.addEventListener('click', () => {
+            checkoutModal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === checkoutModal) checkoutModal.style.display = 'none';
+        });
+
+        // Optional: confirm checkout button
+        confirmCheckout.addEventListener('click', () => {
+            alert('Checkout complete!');
+            checkoutModal.style.display = 'none';
+            saveHistory(); // Save order to history
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart(); // update cart display
+            window.location.href = 'index.html'; // redirect to home
+        });
+
+        function saveHistory()
+        {
+            const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            const tipInput = document.getElementById('tipAmount');
+            const tip = parseFloat(tipInput.value) || 0;
+            const tax = cart.reduce((sum, item) => sum + item.price, 0) * 0.06;
+            const total = cart.reduce((sum, item) => sum + item.price, 0) + tax + tip;
+
+            const orderRecord = {
+                date: new Date().toLocaleString(),
+                items: cart,
+                tip: tip,
+                tax: tax,
+                total: total
+            };
+            history.push(orderRecord);
+            localStorage.setItem('orderHistory', JSON.stringify(history));
+        }
+
+        const tipInput = document.getElementById('tipAmount');
+
+        tipInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // prevent form submission
+                renderCart(); // re-render cart with the tip applied
+            }
+        });
+
+
+        function renderCart() {
+            cartList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong> (${item.size})<br>
+                        Toppings: ${item.toppings.join(', ') || 'None'}<br>
+                        Quantity: ${item.quantity || 1}<br>
+                        Price: $${item.price.toFixed(2)}
+                    </div>
+                    <div>
+                        <button class="editBtn">Edit</button>
+                        <button class="removeBtn">Remove</button>
+                    </div>
+                `;
+                cartList.appendChild(itemDiv);
+
+                // Edit button
+                itemDiv.querySelector('.editBtn').addEventListener('click', () => openEditModal(index));
+
+                // Remove button
+                itemDiv.querySelector('.removeBtn').addEventListener('click', () => {
+                    cart.splice(index, 1);
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    renderCart();
+                });
+            });
+            // Tip handling
+            const tipInput = document.getElementById('tipAmount');
+            let tip = parseFloat(tipInput.value) || 0;
+            if(cart.length === 0) tip = 0; // No tip if cart is empty
+            let tax = total * 0.06;
+            total += tax;
+            total += tip;
+            totalEl.innerHTML = `Tip: $${tip.toFixed(2)}<br>
+                Tax: $${tax.toFixed(2)}<br>
+                Total: $${total.toFixed(2)}`;
+        }
+
+        function openEditModal(index) {
+            editingIndex = index;
+            const item = cart[index];
+            itemTitle.textContent = 'Customize ' + item.name;
+
+            // Build quantity input
+            let html = `
+                <label>Quantity:</label><br>
+                <input type="number" id="itemQuantity" min="1" value="${item.quantity || 1}"><br><br>
+            `;
+
+            // Build options dynamically
+            if (/pizza/i.test(item.name) || item.name === 'Margherita' || item.name === 'NY Style Pizza') {
+                html += `
+                    <label>Select Size:</label><br>
+                    <label><input type="radio" name="size" value="Small" ${item.size === 'Small' ? 'checked' : ''}> Small + 0.00</label><br>
+                    <label><input type="radio" name="size" value="Medium" ${item.size === 'Medium' ? 'checked' : ''}> Medium + 3.50</label><br>
+                    <label><input type="radio" name="size" value="Large" ${item.size === 'Large' ? 'checked' : ''}> Large + 5.50</label><br><br>
+
+                    <label>Add Any Additional Toppings</label><br>
+                    <label><input type="checkbox" name="topping" value="Extra Cheese" ${item.toppings.includes('Extra Cheese') ? 'checked' : ''}> Extra Cheese + 1.25</label><br>
+                    <label><input type="checkbox" name="topping" value="Pepperoni" ${item.toppings.includes('Pepperoni') ? 'checked' : ''}> Pepperoni + 2.25</label><br>
+                    <label><input type="checkbox" name="topping" value="Fresh Tomatoes" ${item.toppings.includes('Fresh Tomatoes') ? 'checked' : ''}> Fresh Tomatoes + 2.25</label><br><br>
+                `;
+            } else if (/sub/i.test(item.name) || item.name === 'Italian Sub') {
+                html += `
+                    <label>Select Size:</label><br>
+                    <label><input type="radio" name="size" value="Small" ${item.size === 'Small' ? 'checked' : ''}> Small + 0.00</label><br>
+                    <label><input type="radio" name="size" value="Large" ${item.size === 'Large' ? 'checked' : ''}> Large + 2.50</label><br><br>
+
+                    <label>Add Any Additional Toppings</label><br>
+                    <label><input type="checkbox" name="topping" value="Mushrooms" ${item.toppings.includes('Mushrooms') ? 'checked' : ''}> Mushrooms + 0.75</label><br>
+                    <label><input type="checkbox" name="topping" value="Lettuce" ${item.toppings.includes('Lettuce') ? 'checked' : ''}> Lettuce + 0.50</label><br><br>
+                `;
+            } else {
+                html += `<p>No customization available for this item.</p>`;
+            }
+
+            optionsContainer.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        // Confirm edit
+        confirmBtn.addEventListener('click', () => {
+            if (editingIndex === null) return;
+            const item = cart[editingIndex];
+
+            const sizeEl = optionsContainer.querySelector('input[name="size"]:checked');
+            if (!sizeEl) return alert('Select a size');
+
+            const quantityEl = optionsContainer.querySelector('#itemQuantity');
+            const quantity = parseInt(quantityEl.value) || 1;
+
+            let newPrice = 0;
+            const size = sizeEl.value;
+
+            if (/pizza/i.test(item.name) || item.name === 'Margherita' || item.name === 'NY Style Pizza') {
+                newPrice = item.name === 'Margherita' ? 10 : 12;
+                if (size === 'Medium') newPrice += 3.50;
+                if (size === 'Large') newPrice += 5.50;
+                optionsContainer.querySelectorAll('input[name="topping"]:checked').forEach(cb => {
+                    if (cb.value === 'Extra Cheese') newPrice += 1.25;
+                    else if (cb.value === 'Pepperoni') newPrice += 2.25;
+                    else if (cb.value === 'Fresh Tomatoes') newPrice += 2.25;
+                });
+            } else if (/sub/i.test(item.name) || item.name === 'Italian Sub') {
+                newPrice = 10;
+                if (size === 'Large') newPrice += 2.50;
+                optionsContainer.querySelectorAll('input[name="topping"]:checked').forEach(cb => {
+                    if (cb.value === 'Mushrooms') newPrice += 0.75;
+                    else if (cb.value === 'Lettuce') newPrice += 0.50;
+                });
+            }
+
+            newPrice = newPrice * quantity; // Multiply by quantity
+            const toppings = Array.from(optionsContainer.querySelectorAll('input[name="topping"]:checked')).map(i => i.value);
+            cart[editingIndex] = { ...item, size, toppings, quantity, price: newPrice };
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            modal.style.display = 'none';
+            editingIndex = null;
+        });
+
+        closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        renderCart();
+        </script>
+
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Menu</title>
+    <style>
+        body 
+        { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-size: cover;
+            padding: 40px 25px;
+            margin-left: 0 auto;
+        }
+        header
+        {
+            background-color: lightgray;
+            text-align: center;
+            border-style: groove;
+            border-radius: 10px;
+            box-shadow:0 4px 8px 0 rgba(255, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        ul
+        {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        nav
+        {
+            width: 100%;
+            margin-bottom: 20px ;
+        }
+
+        li
+        {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        a
+        {
+            display: flex;
+            text-decoration: none;
+            color: black;
+            background-color: #e0e0e0;
+            padding: 12px 24px;
+            font-size: 20px;
+            border: 2px solid #bdbdbd;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            cursor: pointer;
+            vertical-align: center;
+        }
+        a:hover
+        {
+            background-color: #616161;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Order container */
+        .cart-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* Order title */
+        .cart-item h3 {
+            margin-top: 0;
+            color: #1d3557;
+            font-size: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 6px;
+        }
+
+        /* Order time */
+        .cart-item p em {
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* Table for items */
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .order-table th, .order-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .order-table th {
+            background: #f1f3f6;
+            color: #333;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .order-table td {
+            font-size: 15px;
+            color: #444;
+        }
+
+        /* Totals section inside each order */
+        .order-totals {
+            margin-top: 10px;
+            text-align: right;
+            font-weight: bold;
+            color: #222;
+        }
+
+        /* Grand totals at the bottom */
+        #total {
+            font-weight: bold;
+            font-size: 22px;
+            margin-top: 30px;
+            padding: 15px;
+            background:red;
+            color: gray;
+            border-radius: 10px;
+            text-align: right;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            max-width: 800px;
+            width: 100%;
+        }
+
+     
+    </style>
+</head>
+<body>
+
+
+    <header><h1>Admin</h1></header>
+
+    <nav>
+        <ul>
+            <li><a href = "index.html" id="homeLink">Back to Home</a></li>
+            <li><a href = "app.html">Go Back to Order</a></li>
+            <li><a href = "cart.html">Cart</a></li>
+            <li><a href = "order.html">Back to Order Home</a></li>
+        </ul>
+    </nav>
+
+    <div id="cartList"></div>
+
+    <div id="total">Total: $0.00</div>
+
+    
+
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartList = document.getElementById('cartList');
+            const totalDisplay = document.getElementById('total');
+            let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+
+            function renderCart() {
+                
+                cartList.innerHTML = '';
+                let grandTotal = 0;
+                let grandTax = 0;
+                let grandTip = 0;
+
+                if (orderHistory.length === 0) {
+                    cartList.innerHTML = '<p>No past orders.</p>';
+                    totalDisplay.textContent = 'Total: $0.00';
+                    return;
+                }
+
+                orderHistory.forEach((order, index) => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'cart-item';
+
+                    // Build the order block with table
+                    orderDiv.innerHTML = `
+                        <h3>Order ${index + 1}</h3>
+                        <p><em>Placed: ${order.date}</em></p>
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Size</th>
+                                    <th>Quantity</th>
+                                    <th>Toppings</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${order.items.map(item => `
+                                    <tr>
+                                        <td>${item.name}</td>
+                                        <td>${item.size || '-'}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>${item.toppings?.join(', ') || 'None'}</td>
+                                        <td>$${item.price.toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <div class="order-totals">
+                            Tip: $${order.tip.toFixed(2)}<br>
+                            Tax: $${order.tax.toFixed(2)}<br>
+                            Total: $${order.total.toFixed(2)}
+                        </div>
+                    `;
+
+                    cartList.appendChild(orderDiv);
+
+                    // Add to grand totals
+                    grandTotal += order.total;
+                    grandTax += order.tax;
+                    grandTip += order.tip;
+                });
+
+                // Show grand totals at the bottom
+                totalDisplay.innerHTML = `
+                    Total Tip: $${grandTip.toFixed(2)}<br>
+                    Total Tax: $${grandTax.toFixed(2)}<br>
+                    <strong>Grand Total: $${grandTotal.toFixed(2)}</strong>
+                `;
+            }
+
+            renderCart();
+        });
+    </script>
+        
+
+
+</body>
+</html>

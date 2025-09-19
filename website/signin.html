@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Order App</title>
+    </head>    
+
+    <body> 
+
+        <header><h1>Sign In</h1></header>
+
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br><br>
+        <input onclick="signIn()" class = "button" type="button" value="Sign In">           
+        </div>
+
+        <script>
+            function signIn()
+            {
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                const users = JSON.parse(localStorage.getItem("users")) || [];
+                
+                if(username == "admin" && password == "admin")
+                {
+                    alert("Admin sign in successful!");
+                    window.location.href = 'admin.html';
+                    return;
+                }
+                if(users[username] && users[username] === password)
+                {
+                    alert("Sign in successful!");
+                    window.location.href = 'app.html';
+                } else {
+                    alert("Invalid username or password.");
+                }
+            }
+        </script>
+    </body>
+
+    <style>
+        div
+        {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 18px;
+        }
+        input[type="text"], input[type="password"]
+        {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid black;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .button
+        {
+            text-decoration: none;
+            color: black;
+            background-color: lightgray;
+            border-style: groove;
+            border-radius: 10px;
+            box-shadow:0 4px 8px 0 rgba(255, 0, 0, 0.1);
+            padding: 10px 15px;
+            margin-top: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        div
+        {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-style: groove;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow:0 4px 8px 0 rgba(255, 0, 0, 0.1);
+            max-width: 850px;
+            width: 100%;
+            margin-bottom: 20px;
+            margin-left: 0 auto;
+        }
+
+        body
+        {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: "Lucida Console", "Courier New", monospace;
+            margin: 0;
+            background-size: cover;
+            padding: 40px 25px;
+            margin-left: 0 auto;
+        }
+
+        header
+        {
+            background-color: lightgray;
+            text-align: center;
+            border-style: groove;
+            border-radius: 10px;
+            box-shadow:0 4px 8px 0 rgba(255, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+    </style>
+</html>
